@@ -4,7 +4,7 @@ import { Direction } from '../types/Direction';
 import env from '../env';
 
 export default class LevelPlayer extends Phaser.Scene {
-  froggy : ArticodingObject;
+  froggy: ArticodingObject;
   constructor() {
     super("LevelPlayer");
   }
@@ -43,18 +43,20 @@ export default class LevelPlayer extends Phaser.Scene {
   move(steps: number, direction: string) {
     console.log("se esta ejecutando dentro de Menu la siguiente funcion: execmove(", steps, direction, ")");
 
-    for(let i = 0; i < steps; i++){
-      let xMove = env.TILE_SIZE * (direction === Direction.Left ? -1 : (direction === Direction.Right) ? 1 : 0) + this.froggy.x;
-      let yMove = env.TILE_SIZE * (direction === Direction.Up ? -1 : (direction === Direction.Down) ? 1 : 0) + this.froggy.y;
-      
-      // Move
-      this.tweens.add({
-        targets: this.froggy,
-        x: xMove,
-        y: yMove,
-        duration: 1000,
-        ease: "Sine.inOut",
-      });
-    }
+    if(steps == 0)
+      return;
+
+    let xMove = env.TILE_SIZE * (direction === Direction.Left ? -1 : (direction === Direction.Right) ? 1 : 0) + this.froggy.x;
+    let yMove = env.TILE_SIZE * (direction === Direction.Up ? -1 : (direction === Direction.Down) ? 1 : 0) + this.froggy.y;
+
+    // Move
+    this.tweens.add({
+      targets: this.froggy,
+      x: xMove,
+      y: yMove,
+      duration: 1000,
+      ease: "Sine.inOut",
+      onComplete: this.move.bind(this, --steps, direction)
+    });
   }
 }
