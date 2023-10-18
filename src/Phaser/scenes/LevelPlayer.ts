@@ -4,7 +4,8 @@ export default class LevelPlayer extends Phaser.Scene {
   constructor() {
     super("LevelPlayer");
   }
-
+//TODO esta escena llama a LevelEditor y no puede ser. Tiene que cargar el nivel que le pasemos por parametro para
+//ejecutar funciones.
   preload() {
     this.load.image("logo", "assets/sprites/logo.png");
   }
