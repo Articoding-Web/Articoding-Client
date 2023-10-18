@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import LevelPlayer from "./scenes/LevelPlayer";
 import LevelEditor from "./scenes/LevelEditor";
 
+
 const PhaserConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.CANVAS,
   parent: 'phaserDiv',
@@ -18,7 +19,6 @@ export default class PhaserController {
 
   constructor() {
     this.game = new Phaser.Game(PhaserConfig);
-    const gameInstance = this.game;
   }
 
   increaseSize() {

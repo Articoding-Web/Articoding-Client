@@ -1,16 +1,9 @@
 
 import * as Phaser from 'phaser';
-import { LevelData } from '../Classes/LevelData';
+import { LevelData } from '../types/LevelData';
 import ArticodingObject from "../Classes/ArticodingObject";
 import TileObject from "../Classes/TileObject";
-
-const TILE_SIZE = 100;
-const MIN_NUM_TILES = 2;
-const MAX_NUM_TILES = 15;
-const INITIAL_TILES = 5;
-
-const LASER_START_X = 200;
-const LASER_START_Y = 500;
+import env from '../env';
 
 export default class LevelEditor extends Phaser.Scene {
   resizeDialog = <HTMLDivElement>document.getElementById("gridResizeDialog");
@@ -35,8 +28,8 @@ export default class LevelEditor extends Phaser.Scene {
 
   preload(): void {
     this.resizeDialog.classList.remove("d-none");
-    this.rows = this.level ? this.level.rows : INITIAL_TILES;
-    this.columns = this.level ? this.level.columns : INITIAL_TILES;
+    this.rows = this.level ? this.level.rows : env.INITIAL_TILES;
+    this.columns = this.level ? this.level.columns : env.INITIAL_TILES;
     this.setMinMaxNumTiles();
     this.tiles = [];
 
@@ -59,15 +52,15 @@ export default class LevelEditor extends Phaser.Scene {
   create(): void {
     this.laser = new ArticodingObject(
       this,
-      LASER_START_X,
-      LASER_START_Y,
+      env.LASER_START_X,
+      env.LASER_START_Y,
       "FrogSpriteSheet",
       "down/SpriteSheet-02.png"
     );
     new ArticodingObject(
       this,
-      LASER_START_X,
-      LASER_START_Y + 100,
+      env.LASER_START_X,
+      env.LASER_START_Y + 100,
       "BigTreasureChest",
       "BigTreasureChest-0.png",
       true
@@ -77,10 +70,10 @@ export default class LevelEditor extends Phaser.Scene {
     this.zoom();
 
     document.getElementById("changeGridSize").addEventListener("click", ev => {
-      if (+this.numRowsInput.value < MIN_NUM_TILES || +this.numRowsInput.value > MAX_NUM_TILES) {
+      if (+this.numRowsInput.value < env.MIN_NUM_TILES || +this.numRowsInput.value > env.MAX_NUM_TILES) {
         console.error("Invalid grid HEIGHT");
       }
-      else if (+this.numColsInput.value < MIN_NUM_TILES && +this.numColsInput.value > MAX_NUM_TILES) {
+      else if (+this.numColsInput.value < env.MIN_NUM_TILES && +this.numColsInput.value > env.MAX_NUM_TILES) {
         console.error("Invalid grid WIDTH");
       } else {
         this.rows = +this.numRowsInput.value;
@@ -112,30 +105,30 @@ export default class LevelEditor extends Phaser.Scene {
   }
 
   setMinMaxNumTiles() {
-    this.numColsInput.setAttribute("min", MIN_NUM_TILES.toString());
-    this.numColsInput.setAttribute("max", MAX_NUM_TILES.toString());
+    this.numColsInput.setAttribute("min", env.MIN_NUM_TILES.toString());
+    this.numColsInput.setAttribute("max", env.MAX_NUM_TILES.toString());
     this.numColsInput.value = this.columns.toString();
-    this.numRowsInput.setAttribute("min", MIN_NUM_TILES.toString());
-    this.numRowsInput.setAttribute("max", MAX_NUM_TILES.toString());
+    this.numRowsInput.setAttribute("min", env.MIN_NUM_TILES.toString());
+    this.numRowsInput.setAttribute("max", env.MAX_NUM_TILES.toString());
     this.numRowsInput.value = this.rows.toString();
   }
 
   createLevel(): void {
     const SCREEN_WIDTH = this.cameras.main.width;
     const SCREEN_HEIGHT = this.cameras.main.height;
-    let x = (SCREEN_WIDTH - this.rows * TILE_SIZE) / 2;
-    let y = (SCREEN_HEIGHT - this.columns * TILE_SIZE) / 2;
+    let x = (SCREEN_WIDTH - this.rows * env.TILE_SIZE) / 2;
+    let y = (SCREEN_HEIGHT - this.columns * env.TILE_SIZE) / 2;
 
     let numTiles = this.rows * this.columns;
 
     if (numTiles < this.tiles.length) {
-      this.laser.setPosition(LASER_START_X, LASER_START_Y);
+      this.laser.setPosition(env.LASER_START_X, env.LASER_START_Y);
 
       while (this.tiles.length > numTiles) {
         this.tiles.pop()?.destroy();
       }
     } else if (numTiles > this.tiles.length) {
-      this.laser.setPosition(LASER_START_X, LASER_START_Y);
+      this.laser.setPosition(env.LASER_START_X, env.LASER_START_Y);
 
       while (this.tiles.length < numTiles) {
         const tile = this.add.sprite(0, 0, "tile").setInteractive();
@@ -147,8 +140,8 @@ export default class LevelEditor extends Phaser.Scene {
     this.tiles = Phaser.Actions.GridAlign(this.tiles, {
       width: this.rows,
       height: this.columns,
-      cellWidth: TILE_SIZE,
-      cellHeight: TILE_SIZE,
+      cellWidth: env.TILE_SIZE,
+      cellHeight: env.TILE_SIZE,
       x,
       y,
     });
@@ -172,7 +165,7 @@ export default class LevelEditor extends Phaser.Scene {
   }
 
   turret(): void {
-    this.laser = this.add.sprite(LASER_START_X, LASER_START_Y, "laser");
+    this.laser = this.add.sprite(env.LASER_START_X, env.LASER_START_Y, "laser");
     this.laser.setInteractive();
     const targetWidth = 200;
     const targetHeight = 200;

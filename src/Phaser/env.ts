@@ -1,0 +1,8 @@
+export default {
+    TILE_SIZE: 100,
+    MIN_NUM_TILES: 2,
+    MAX_NUM_TILES: 15,
+    INITIAL_TILES: 5,
+    LASER_START_X: 200,
+    LASER_START_Y: 500
+}
