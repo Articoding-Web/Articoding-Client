@@ -19,6 +19,7 @@ export default class LevelEditor extends Phaser.Scene {
   rows: integer;
   columns: integer;
   tiles: Phaser.GameObjects.Sprite[] = [];
+  //tiles --> tileObjects? //TODO
   laser: Phaser.GameObjects.Sprite;
   level: LevelData;
 

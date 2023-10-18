@@ -40,7 +40,7 @@ export default class LevelPlayer extends Phaser.Scene {
       let code = globalThis.blocklyController.getCode();
       eval(code);
   }
-  
+  //TODO deprecated
   move(steps : number, direction: string) {
     console.log("se esta ejecutando dentro de Menu la siguiente funcion: execmove(", steps, direction,")");
   }
