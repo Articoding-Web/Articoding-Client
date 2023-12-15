@@ -4,7 +4,7 @@ import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
 import json from '@rollup/plugin-json';
 import express from 'express';
-import mysql from 'mysql2'; // Import the mysql2 library
+import mysql from 'mysql'; // Import the mysql2 library
 
 // Create a connection pool
 const pool = mysql.createPool({
@@ -20,8 +20,10 @@ pool.getConnection((err, connection) => {
     console.error('Error connecting to database:', err);
     return;
   }
+  else{
+    console.log('Connected to database');
+  }
 
-  console.log('Connected to database');
 
   // Use the connection for database operations
 
@@ -88,4 +90,36 @@ app.use(express.static('public'));
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+app.get('/level/:id', (req, res) => {
+  console.log('Request received: ', req.params.id);
+  getLevel(req.params.id, (level) => {
+    if(level){
+      console.log('Level found: ', level);
+      res.json(level);
+    }
+    else{
+      res.sendStatus(404);
+    }
+  });
+});
+
+function getLevel(id, callback){
+  pool.query('SELECT * FROM level WHERE id = ?', [id], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    else{
+      console.log('Query successful');
+      if(rows.length === 1){
+        callback(rows[0]);
+      }
+      else{
+        callback(null);
+      }
+    }
+
+  });
+}
 

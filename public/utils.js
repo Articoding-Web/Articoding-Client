@@ -1,5 +1,5 @@
-import bootstrap from 'bootstrap';
-
+//import bootstrap from 'bootstrap';
+import {callPlayLevel } from  "../src/client.ts";
 export function appendModal(msg, stars, status) {
     let modalHtml = `
         <div id="msgModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -30,6 +30,8 @@ export function appendModal(msg, stars, status) {
 
     modalElement.addEventListener('hidden.bs.modal', function () {
         modalElement.remove();
+    
+        callPlayLevel(2);
     });
 
     modalInstance.show();
