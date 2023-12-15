@@ -1,9 +1,33 @@
 import commonjs from "@rollup/plugin-commonjs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
-import serve from "rollup-plugin-serve";
 import typescript from "@rollup/plugin-typescript";
 import json from '@rollup/plugin-json';
+import express from 'express';
+import mysql from 'mysql2'; // Import the mysql2 library
+
+// Create a connection pool
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'admin',
+  password: '',
+  database: 'articoding',
+});
+
+// Get a connection from the pool
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error('Error connecting to database:', err);
+    return;
+  }
+
+  console.log('Connected to database');
+
+  // Use the connection for database operations
+
+  // Release the connection back to the pool
+  connection.release();
+});
 
 export default [
   // Phaser
@@ -52,16 +76,16 @@ export default [
 
       //  See https://github.com/rollup/plugins/tree/master/packages/typescript for config options
       typescript(),
-
-      serve({
-        open: true,
-        contentBase: "public",
-        host: "localhost",
-        port: 3000,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      }),
     ],
   },
 ];
+
+const app = express();
+const port = 3000;
+
+app.use(express.static('public'));
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+

@@ -200,7 +200,7 @@ export default class LevelPlayer extends Phaser.Scene {
     }
     this.processInstructionQueue();
   }
-
+  //mejor por eventos (por equipos de baja calidad)
   processInstructionQueue() {
     if (this.instructionQueue.length > 0) {
       let instruction = this.instructionQueue.shift();

@@ -1,3 +1,4 @@
+
 import PhaserController from "./Phaser/PhaserController";
 import BlocklyController from "./Blockly/BlocklyController";
 import LevelPlayer from "./Phaser/scenes/LevelPlayer";
@@ -15,6 +16,8 @@ let phaserController: PhaserController;
 let blocklyToggler = document.getElementById(
   "blocklyToggler"
 ) as HTMLButtonElement;
+
+
 
 window.addEventListener("load", (event) => {
   addNavbarListeners();
@@ -65,3 +68,5 @@ function editLevel() {
   phaserController = new PhaserController("LevelEditor", LevelEditor);
   globalThis.phaserController = phaserController;
 }
+
+
