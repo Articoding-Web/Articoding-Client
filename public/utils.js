@@ -16,7 +16,7 @@ export function appendModal(msg, stars, status) {
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cerrar</button>
-                            <button type="button" class="btn btn-primary">${status === 0 ? 'Reintentar Nivel' : 'Siguiente Nivel'}</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">${status === 0 ? 'Reintentar Nivel' : 'Siguiente Nivel'}</button>
                         </div>
                 </div>
             </div>

@@ -48,14 +48,14 @@ export default class LevelEditor extends Phaser.Scene {
     // Load froggy
     this.load.multiatlas(
       "FrogSpriteSheet",
-      "assets/sprites/FrogSpriteSheet.json",
-      "assets/sprites/"
+      "../../../public/assets/sprites/player.json",
+      "../../../public/assets/sprites/"
     );
     // Load chest
     this.load.multiatlas(
       "BigTreasureChest",
-      "assets/sprites/BigTreasureChest.json",
-      "assets/sprites/"
+      "../../../public/assets/sprites/chest.png",
+      "../../../public/assets/sprites/"
     );
 
     this.load.image("tile", "assets/tiles/tile.png");

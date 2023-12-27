@@ -14,7 +14,10 @@ export default class BlocklyController {
   workspace: Blockly.WorkspaceSvg;
 
   constructor(toolbox: string | ToolboxDefinition | Element, workspaceBlocks?: any) {
-    this.workspace = Blockly.inject(this.blocklyDiv, { toolbox });
+    //@DOCU esto lo saque de aqui:
+    //https://developers.google.com/blockly/reference/js/blockly.options_class.maxinstances_property
+    //es una propiedad para limitar los bloques que se pueden usar en el workspace
+    this.workspace = Blockly.inject(this.blocklyDiv, { toolbox, maxInstances: { 'start': 1, 'numberSpecial': 5 } });
     Blockly.defineBlocksWithJsonArray(blocks);
 
     this.startBlock = this.workspace.newBlock('start');

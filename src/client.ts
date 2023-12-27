@@ -48,6 +48,8 @@ class Client {
 
   playLevel(id: number) {
     console.log("PLAYING LEVEL " + id);
+    if(blocklyController){blocklyController.destroy();}
+    if(phaserController){phaserController.destroy();}
     ////////////////////////////////////////////
     /*
       -- CAMBIO: llamamos a la bbdd (deberia esta en un DAO en el servidor, pero para nuestros propositos, estara aqui)
@@ -56,6 +58,10 @@ class Client {
     fetch(`/level/${id}`) // Modified to call /level/1
       .then((response) => response.json())
       .then( (level) => {
+        //  if (response.ok) {
+          //return response.text(); 
+          //implementar para que no entre en then()
+        
         let data = JSON.parse(level.data);
         console.log("parsed json: ", data);
         //await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second (adjust as needed)

@@ -97,6 +97,8 @@ app.get('/level/:id', (req, res) => {
     if(level){
       console.log('Level found: ', level);
       res.json(level);
+      //stringify tiene parametros (mirar mdn)
+      //TODO asegurarse de que todas las peticiones son asincronas
     }
     else{
       res.sendStatus(404);
