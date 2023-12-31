@@ -1,164 +1,63 @@
 import * as Phaser from "phaser";
 
-import { LevelData } from "../Classes/LevelData";
-
-import Board from "../Classes/Board";
-import TileObject from "../Classes/TileObject";
-import ArticodingObject from "../Classes/ArticodingObject";
-
 const TILE_SIZE = 100;
 const MIN_NUM_TILES = 2;
 const MAX_NUM_TILES = 10;
 const INITIAL_TILES = 5;
 
 export default class LevelEditor extends Phaser.Scene {
-  resizeDialog = <HTMLDivElement>document.getElementById("gridResizeDialog");
-  numRowsInput = <HTMLInputElement>document.getElementById("numRowsInput");
-  numColsInput = <HTMLInputElement>document.getElementById("numColsInput");
-  rows: integer;
-  columns: integer;
-  tiles: TileObject[] = [];
-  frog: Phaser.GameObjects.Sprite;
-  chest: Phaser.GameObjects.Sprite;
-  level: LevelData;
-  board: Board;
-
-  objectX: integer;
-  objectY: integer;
+  numRowsInput: HTMLInputElement;
+  numColsInput: HTMLInputElement;
+  rows: number;
+  columns: number;
+  tiles: Phaser.GameObjects.Rectangle[] = [];
+  modal: Phaser.GameObjects.Container;
 
   constructor() {
     super("LevelEditor");
   }
 
-  init(level?: LevelData): void {
-    if (level.rows !== undefined) {
-      this.level = level;
-    }
-  }
-
   preload(): void {
-    this.resizeDialog.classList.remove("d-none");
-    this.rows = this.level ? this.level.rows : INITIAL_TILES;
-    this.columns = this.level ? this.level.columns : INITIAL_TILES;
-    this.setMinMaxNumTiles();
-    this.tiles = [];
-    this.objectX = this.cameras.main.width / 10;
-    this.objectY = this.cameras.main.height / 3;
-
-    // Load froggy
-    this.load.multiatlas(
-      "FrogSpriteSheet",
-      "../../../public/assets/sprites/player.json",
-      "../../../public/assets/sprites/"
-    );
-    // Load chest
-    this.load.multiatlas(
-      "BigTreasureChest",
-      "../../../public/assets/sprites/chest.png",
-      "../../../public/assets/sprites/"
-    );
-
+    this.rows = INITIAL_TILES;
+    this.columns = INITIAL_TILES;
     this.load.image("tile", "assets/tiles/tile.png");
+    // Load your sprites here
   }
 
   create(): void {
-    this.board = new Board();
-    this.frog = new ArticodingObject(
-      this,
-      this.objectX,
-      this.objectY,
-      "FrogSpriteSheet",
-      this.board,
-      "down/SpriteSheet-02.png"
-    );
-    this.chest = new ArticodingObject(
-      this,
-      this.objectX,
-      this.objectY + 100,
-      "BigTreasureChest",
-      this.board,
-      "BigTreasureChest-0.png",
-      true
-    );
+    this.createGrid();
+    this.createModal();
 
-    this.createLevel();
-    this.zoom();
-
-    document
-      .getElementById("changeGridSize")
-      .addEventListener("click", (event) => {
-        if (
-          +this.numRowsInput.value > MIN_NUM_TILES ||
-          +this.numRowsInput.value < MAX_NUM_TILES
-        ) {
-          this.rows = +this.numRowsInput.value;
-          this.columns = +this.numColsInput.value;
-          this.board.removeAll();
-          this.createLevel();
-        }
-      });
-
-    this.events.on("shutdown", (event) => {
-      this.resizeDialog.classList.add("d-none");
+    this.input.on("gameobjectdown", (pointer, gameObject) => {
+      this.modal.setVisible(true);
+      this.modal.setPosition(gameObject.x, gameObject.y);
     });
   }
 
-  zoom(): void {
-    this.input.on("wheel", (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (deltaY > 0) {
-        var zoom = this.cameras.main.zoom - 0.05;
-        if (zoom > 0.5) this.cameras.main.zoom -= 0.05;
-      }
-      if (deltaY < 0) {
-        var zoom = this.cameras.main.zoom + 0.05;
-        if (zoom < 1.5) this.cameras.main.zoom = zoom;
-      }
-    });
-  }
-
-  setMinMaxNumTiles(): void {
-    this.numColsInput.setAttribute("min", MIN_NUM_TILES.toString());
-    this.numColsInput.setAttribute("max", MAX_NUM_TILES.toString());
-    this.numColsInput.value = this.columns.toString();
-    this.numRowsInput.setAttribute("min", MIN_NUM_TILES.toString());
-    this.numRowsInput.setAttribute("max", MAX_NUM_TILES.toString());
-    this.numRowsInput.value = this.rows.toString();
-  }
-
-  createLevel(): void {
+  createGrid(): void {
     const SCREEN_WIDTH = this.cameras.main.width;
     const SCREEN_HEIGHT = this.cameras.main.height;
-    let x = (SCREEN_WIDTH - this.rows * TILE_SIZE) / 2;
-    let y = (SCREEN_HEIGHT - this.columns * TILE_SIZE) / 2;
+    const x = (SCREEN_WIDTH - this.rows * TILE_SIZE) / 2;
+    const y = (SCREEN_HEIGHT - this.columns * TILE_SIZE) / 2;
 
-    let numTiles = this.rows * this.columns;
-
-    if (numTiles < this.tiles.length) {
-      this.frog.setPosition(this.objectX, this.objectY);
-      this.chest.setPosition(this.objectX, this.objectY + 100);
-
-      while (this.tiles.length > numTiles) {
-        this.tiles.pop()?.destroy();
-      }
-    } else if (numTiles > this.tiles.length) {
-      this.frog.setPosition(this.objectX, this.objectY);
-      this.chest.setPosition(this.objectX, this.objectY + 100);
-
-      while (this.tiles.length < numTiles) {
-        const tile = new TileObject(this, 0, 0, "tile");
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.columns; j++) {
+        const tile = this.add.rectangle(
+          x + i * TILE_SIZE,
+          y + j * TILE_SIZE,
+          TILE_SIZE,
+          TILE_SIZE,
+          0x000000
+        );
+        tile.setInteractive();
         this.tiles.push(tile);
       }
     }
+  }
 
-    this.tiles = Phaser.Actions.GridAlign(this.tiles, {
-      width: this.rows,
-      height: this.columns,
-      cellWidth: TILE_SIZE,
-      cellHeight: TILE_SIZE,
-      x,
-      y,
-    });
-
-    this.board.setTiles(this.tiles);
+  createModal(): void {
+    this.modal = this.add.container(0, 0);
+    this.modal.setVisible(false);
+    // Add your sprites to the modal container
   }
 }
