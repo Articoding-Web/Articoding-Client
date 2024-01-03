@@ -4,7 +4,6 @@ import config from "../config";
 import { Player } from "../Classes/Player";
 import { GridPhysics } from "../Classes/GridPhysics";
 import { Direction } from "../types/Direction";
-import { appendModal } from "../../../public/utils.js";
 import ChestObject from "../Classes/ChestObject";
 
 export default class LevelPlayer extends Phaser.Scene {
@@ -214,9 +213,9 @@ export default class LevelPlayer extends Phaser.Scene {
       this._cd = 0;
       setTimeout(() => {
         if (this.checkWinCondition()) {
-          appendModal("¡Buen trabajo! nivel completado", 3, 1);
+          // appendModal("¡Buen trabajo! nivel completado", 3, 1);
         } else {
-          appendModal("Nivel no completado...", 0, 0);
+          // appendModal("Nivel no completado...", 0, 0);
         }
       }, 500);
     }

@@ -1,15 +1,9 @@
 import * as Phaser from "phaser";
 
-const TILE_SIZE = 100;
-const MIN_NUM_TILES = 2;
-const MAX_NUM_TILES = 10;
-const INITIAL_TILES = 5;
+const TILE_SIZE = 64;
+const SPRITE_KEY = '../../../public/assets/sprites/door.json';
 
 export default class LevelEditor extends Phaser.Scene {
-  numRowsInput: HTMLInputElement;
-  numColsInput: HTMLInputElement;
-  rows: number;
-  columns: number;
   tiles: Phaser.GameObjects.Rectangle[] = [];
   modal: Phaser.GameObjects.Container;
 
@@ -18,8 +12,6 @@ export default class LevelEditor extends Phaser.Scene {
   }
 
   preload(): void {
-    this.rows = INITIAL_TILES;
-    this.columns = INITIAL_TILES;
     this.load.image("tile", "assets/tiles/tile.png");
     // Load your sprites here
   }
@@ -34,14 +26,20 @@ export default class LevelEditor extends Phaser.Scene {
     });
   }
 
+  createModal(): void {
+    this.modal = this.add.container(0, 0);
+    this.modal.setVisible(false);
+    // Add your sprites to the modal container
+  }
+
   createGrid(): void {
     const SCREEN_WIDTH = this.cameras.main.width;
     const SCREEN_HEIGHT = this.cameras.main.height;
-    const x = (SCREEN_WIDTH - this.rows * TILE_SIZE) / 2;
-    const y = (SCREEN_HEIGHT - this.columns * TILE_SIZE) / 2;
+    const x = (SCREEN_WIDTH - 5 * TILE_SIZE) / 2;
+    const y = (SCREEN_HEIGHT - 5 * TILE_SIZE) / 2;
 
-    for (let i = 0; i < this.rows; i++) {
-      for (let j = 0; j < this.columns; j++) {
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
         const tile = this.add.rectangle(
           x + i * TILE_SIZE,
           y + j * TILE_SIZE,
@@ -53,11 +51,18 @@ export default class LevelEditor extends Phaser.Scene {
         this.tiles.push(tile);
       }
     }
-  }
 
-  createModal(): void {
-    this.modal = this.add.container(0, 0);
-    this.modal.setVisible(false);
-    // Add your sprites to the modal container
+    this.input.on('pointerup', function (pointer) {
+      const clickedTile = this.tiles.find(tile =>
+        pointer.worldX >= tile.x &&
+        pointer.worldX <= tile.x + TILE_SIZE &&
+        pointer.worldY >= tile.y &&
+        pointer.worldY <= tile.y + TILE_SIZE
+      );
+
+      if (clickedTile) {
+        this.add.sprite(clickedTile.x, clickedTile.y, SPRITE_KEY);
+      }
+    }, this);
   }
 }
