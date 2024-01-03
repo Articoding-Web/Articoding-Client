@@ -213,9 +213,29 @@ export default class LevelPlayer extends Phaser.Scene {
       this._cd = 0;
       setTimeout(() => {
         if (this.checkWinCondition()) {
-          // appendModal("¡Buen trabajo! nivel completado", 3, 1);
+          // Creating a custom event
+          const customEvent = new CustomEvent('level_complete', {
+            detail: {
+              message: '¡Buen trabajo! nivel completado',
+              stars: 3,
+              level_completed: 1
+            }
+          });
+
+          // Dispatching the custom event
+          document.getElementById("phaserDiv").dispatchEvent(customEvent);
         } else {
-          // appendModal("Nivel no completado...", 0, 0);
+          // Creating a custom event
+          const customEvent = new CustomEvent('level_complete', {
+            detail: {
+              message: 'Nivel no completado...',
+              stars: 0,
+              level_completed: 0
+            }
+          });
+
+          // Dispatching the custom event
+          document.getElementById("phaserDiv").dispatchEvent(customEvent);
         }
       }, 500);
     }

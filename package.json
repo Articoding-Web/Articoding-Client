@@ -34,6 +34,7 @@
     "agent-base": "^6.0.2",
     "asynckit": "^0.4.0",
     "balanced-match": "^1.0.2",
+    "bootstrap": "^5.3.2",
     "brace-expansion": "^2.0.1",
     "buffer-from": "^1.1.2",
     "builtin-modules": "^3.3.0",

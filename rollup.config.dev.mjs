@@ -9,7 +9,7 @@ import mysql from 'mysql'; // Import the mysql2 library
 // Create a connection pool
 const pool = mysql.createPool({
   host: 'localhost',
-  user: 'admin',
+  user: 'admin_articoding',
   password: '',
   database: 'articoding',
 });
@@ -95,7 +95,7 @@ app.get('/level/:id', (req, res) => {
   console.log('Request received: ', req.params.id);
   getLevel(req.params.id, (level) => {
     if(level){
-      console.log('Level found: ', level);
+      // console.log('Level found: ', level);
       res.json(level);
       //stringify tiene parametros (mirar mdn)
       //TODO asegurarse de que todas las peticiones son asincronas
@@ -124,4 +124,3 @@ function getLevel(id, callback){
 
   });
 }
-

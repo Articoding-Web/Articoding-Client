@@ -4,7 +4,7 @@ import LevelPlayer from "./Phaser/scenes/LevelPlayer";
 import LevelEditor from "./Phaser/scenes/LevelEditor";
 
 import createModal from "./utils";
-import bootstrap from "../public/js/bootstrap5.3.2.min.js";
+import * as bootstrap from "bootstrap";
 
 // Temp
 //import level from './baseLevel.json';
@@ -51,6 +51,10 @@ class Client {
   }
 
   playLevel(id: number) {
+    globalThis.phaserDiv.classList.add("col-lg-8");
+    globalThis.phaserDiv.classList.add("mx-auto");
+    globalThis.phaserDiv.classList.remove("w-100");
+
     console.log("PLAYING LEVEL " + id);
     if (this.blocklyController) {
       this.blocklyController.destroy();
@@ -91,9 +95,19 @@ class Client {
       .catch((err) => {
         console.log(err);
       });
+
+      // TODO: fix
+      document.getElementById("phaserDiv").addEventListener("level_complete", e => {
+        const eventData = (<any>e).detail;
+        this.createMessageModal(eventData.message, eventData.stars, eventData.level_completed)
+      });
   }
 
   editLevel() {
+    globalThis.phaserDiv.classList.remove("col-lg-8");
+    globalThis.phaserDiv.classList.remove("mx-auto");
+    globalThis.phaserDiv.classList.add("w-100");
+
     if (this.blocklyController) {
       this.blocklyController.destroy();
     }
@@ -110,9 +124,11 @@ class Client {
   createMessageModal(msg, stars, status) {
     const modalElement = createModal(msg, stars, status);
 
+    const playLevelFunction = this.playLevel;
+
     modalElement.addEventListener("hide.bs.modal", function () {
     modalElement.remove();
-      this.playLevel(2);
+      playLevelFunction(2);
     });
   
     const modalInstance = new bootstrap.Modal(modalElement);
