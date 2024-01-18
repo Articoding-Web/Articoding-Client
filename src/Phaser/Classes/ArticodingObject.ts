@@ -11,7 +11,7 @@ export default class ArticodingObject extends Phaser.GameObjects.Sprite {
   origX: number;
   origY: number;
   board: Board;
-
+  private collidingWith: ArticodingObject = undefined; // TODO: cambiar esto por obj. general / interfaz
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -127,4 +127,19 @@ export default class ArticodingObject extends Phaser.GameObjects.Sprite {
       this.y = this.origY;
     }
   }
+
+  getPosition() : Phaser.Math.Vector2 {
+    return new Phaser.Math.Vector2(this.origX, this.origY);
+  }
+  
+  collide(object: ArticodingObject): void {
+    object.setCollidingObject(this);
+  }
+  setCollidingObject(obj: ArticodingObject) { 
+    this.collidingWith = obj;
+}
+
+getCollidingObject() : ArticodingObject {
+    return this.collidingWith;
+}
 }

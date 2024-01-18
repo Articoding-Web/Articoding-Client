@@ -23,7 +23,7 @@ export default class LevelPlayer extends Phaser.Scene {
   private chests: ChestObject[] = [];
 
   private gridPhysics: GridPhysics;
-  private _cd = 0;//TODO reemplazar
+  private _cd = 0;//TODO  santi reemplazar
   constructor() {
     super("LevelPlayer");
   }
@@ -99,6 +99,7 @@ export default class LevelPlayer extends Phaser.Scene {
   }
 
   createPlayers() {
+  //añadir fisicas para las ranas tb
     this.gridPhysics = new GridPhysics(this.tilemap, this.scaleFactor, this.chests);
 
     // Create sprites
@@ -106,7 +107,10 @@ export default class LevelPlayer extends Phaser.Scene {
       const player = this.playersLayerJson.objects[x];
 
       // Create and scale sprite
+      
       const sprite = this.add.sprite(player.x, player.y, this.playersLayerJson.spriteSheet);
+      //TODO duda
+     // sprite.setCollideWorldBounds(true);
       this.scaleSprite(sprite, player.x, player.y);
       sprite.setDepth(this.playersLayerJson.depth);
 
@@ -166,7 +170,6 @@ export default class LevelPlayer extends Phaser.Scene {
       }
     }
   }
-
   scaleSprite(sprite: Phaser.GameObjects.Sprite, gridXPosition: number, gridYPosition: number) {
     const offsetX = config.TILE_SIZE / 2 * this.scaleFactor + this.mapCoordX;
     const offsetY = config.TILE_SIZE * this.scaleFactor + this.mapCoordY;

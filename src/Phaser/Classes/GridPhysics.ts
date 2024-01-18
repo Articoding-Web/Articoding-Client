@@ -4,6 +4,7 @@ import { Direction } from "../types/Direction";
 import config from "../config"
 import ChestObject from "./ChestObject";
 import { Player } from "./Player";
+import ArticodingObject from "./ArticodingObject";
 
 const Vector2 = Phaser.Math.Vector2;
 type Vector2 = Phaser.Math.Vector2;
@@ -21,7 +22,7 @@ export class GridPhysics {
     constructor(
         private tileMap: Phaser.Tilemaps.Tilemap,
         private scaleFactor: number,
-        private objects: ChestObject[]    // TODO: cambiar ChestObject por tipo generico
+        private objects: ChestObject[]   //TODo tiene que ser articodingobject pero n otiene getPosition
     ) {
         this.speedPixelsPerSecond = config.TILE_SIZE * this.scaleFactor;
     }
