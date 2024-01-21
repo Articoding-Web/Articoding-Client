@@ -2,7 +2,7 @@ import * as Blockly from "blockly";
 import * as block_code from "./Workspace/block_code";
 
 import { javascriptGenerator } from "blockly/javascript";
-
+import {LevelPlayer} from "../Phaser/scenes/LevelPlayer";
 import blocks from "./Workspace/blocks";
 import { ToolboxDefinition } from "blockly/core/utils/toolbox";
 
@@ -12,11 +12,13 @@ export default class BlocklyController {
   isVisible: boolean = false;
   startBlock: Blockly.BlockSvg;
   workspace: Blockly.WorkspaceSvg;
-
-  constructor(toolbox: string | ToolboxDefinition | Element, workspaceBlocks?: any) {
+// string | ToolboxDefinition | Element ahora sera solo toolboxdefinition
+  constructor(toolbox: ToolboxDefinition, workspaceBlocks?: any) {
     //@DOCU esto lo saque de aqui:
     //https://developers.google.com/blockly/reference/js/blockly.options_class.maxinstances_property
     //es una propiedad para limitar los bloques que se pueden usar en el workspace
+    //TODO abstraer las restricciones para evitar numeros magicos aqui
+   // toolbox = toolbox as ToolboxDefinition; 
     this.workspace = Blockly.inject(this.blocklyDiv, { toolbox, maxInstances: { 'start': 1, 'numberSpecial': 5 } });
     Blockly.defineBlocksWithJsonArray(blocks);
 
@@ -109,6 +111,53 @@ export default class BlocklyController {
     this.isVisible = true;
     window.dispatchEvent(new Event("resize"));
   }
+  //prepare status entities
+  //LLAMAR CUANDO TENGAMOS QUE CARGAR EL TOOLBOX PARA JUGAR
+  prepareStatusBlock() {
+    let objects = LevelPlayer.prototype.getObjects();
+    let players = LevelPlayer.prototype.getPlayers();
+    let chests = LevelPlayer.prototype.getChests();
+    //creamos nuestro bloque
+
+    let dropdownOptions = objects.map((object) => [object, object])
+      .concat(players.map((player) => [player, player]))
+      .concat(chests.map((chest) => [chest, chest]));
+
+    let block = {
+      "type": "changeStatus",
+      "message0": "change status of %1 to %2",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "OBJECT",
+          "options": dropdownOptions
+        },
+        {
+          "type": "field_dropdown",
+          "name": "STATUS",
+          "options": [
+            [
+              "on",
+              "ON"
+            ],
+            [
+              "off",
+              "OFF"
+            ]
+          ]
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": 60,
+      "tooltip": "Changes the status of the specified object",
+      "helpUrl": ""
+    };
+    //registramos nuestro bloque
+    return block;
+  }
+
+
 
   hideWorkspace() {
     globalThis.blocklyArea.classList.add("d-none");

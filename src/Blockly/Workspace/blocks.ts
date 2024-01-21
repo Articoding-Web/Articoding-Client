@@ -36,7 +36,7 @@ export default [
         "previousStatement": null,
         "nextStatement": null,
         "colour": 60,
-        "tooltip": "Moves the robot in the specified direction",
+        "tooltip": "Moves the player in the specified direction",
         "helpUrl": ""
     },
     //block [ACTION = YELLOW] to rotate, asks user to choose left or right, and how many times to rotate
@@ -62,10 +62,45 @@ export default [
         "previousStatement": null,
         "nextStatement": null,
         "colour": 60,
-        "tooltip": "Rotates the robot in the specified direction",
+        "tooltip": "Rotates the player in the specified direction",
+        "helpUrl": ""
+    },
+    {
+        "type": "hit",
+        "message0": "attack %1",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "DIRECTION",
+                "options": [
+                    [
+                        "up",
+                        "UP"
+                    ],
+                    [
+                        "down",
+                        "DOWN"
+                    ],
+                    [
+                        "left",
+                        "LEFT"
+                    ],
+                    [
+                        "right",
+                        "RIGHT"
+                    ]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 60,
+        "tooltip": "attacks in the specified direction",
         "helpUrl": ""
     },
     //block [ACTION = YELLOW] to change status of an object (robot, wall, door, key, etc...) to the specified status (on/off) (can be altered later)
+    //aqui hay que cargar los objetos del nivel, y que el usuario elija uno de ellos
+    //lo voy a meter en workspace
     {
         "type": "changeStatus",
         "message0": "change %1 status to %2",
@@ -75,8 +110,8 @@ export default [
                 "name": "OBJECT",
                 "options": [
                     [
-                        "robot",
-                        "ROBOT"
+                        "player",
+                        "player"
                     ],
                     [
                         "wall",

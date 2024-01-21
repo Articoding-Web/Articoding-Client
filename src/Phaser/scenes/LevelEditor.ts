@@ -31,8 +31,12 @@ export default class LevelEditor extends Phaser.Scene {
     const chest = this.load.image("chest", `${themePath}/chest.png`);
     const door = this.load.image("door", `${themePath}/door.png`);
     const wallObject = this.load.image("wallObject", `${themePath}/wall.png`);
-
-    // Load background
+    // const playerJSON = this.load.multiatlas(
+    //   "player",
+    //   `${themePath}/player.json`,
+    //   themePath
+    // );
+    // // Load background
     const background = this.load.multiatlas(
       "background",
       `${themePath}/background.json`,
@@ -97,6 +101,7 @@ export default class LevelEditor extends Phaser.Scene {
   }
 
   addObjMenu(pointer) {
+    this.createMenus();
     const tempTile = this.tiles[0];
     console.log(tempTile);
     console.log(tempTile.x - tempTile.width);
@@ -109,13 +114,13 @@ export default class LevelEditor extends Phaser.Scene {
 
     console.log(config.TILE_SIZE * this.scaleFactor);
 
-    const clickedTile = this.tiles.find(tile => 
-      pointer.upX >= tile.x - tile.width &&
-      pointer.upX <= tile.x + config.TILE_SIZE * this.scaleFactor &&
-      pointer.upY >= tile.y - tile.height &&
-      pointer.upY <= tile.y + config.TILE_SIZE * this.scaleFactor
-    );
+    const closestTile = this.tiles.reduce((closestTile, tile) => {
+      const distanceToTile = Phaser.Math.Distance.Between(pointer.upX, pointer.upY, tile.x, tile.y);
+      const distanceToClosestTile = Phaser.Math.Distance.Between(pointer.upX, pointer.upY, closestTile.x, closestTile.y);
+      return distanceToTile < distanceToClosestTile ? tile : closestTile;
+    });
 
+    const clickedTile = closestTile;
     this.add.image(clickedTile.x, clickedTile.y, "imh");
 
     // if (clickedTile) {
@@ -161,6 +166,46 @@ export default class LevelEditor extends Phaser.Scene {
     //   menu.add([sprite1, sprite2, spri// te3]);
     // }
     //  }
+  }
+
+
+  createMenus(): void {
+    const backgroundMenu = this.createMenu(["background"]);
+    const objectMenu = this.createMenu(["player", "chest", "door"]);
+    backgroundMenu.setPosition(450, 300);
+    objectMenu.setPosition(650, 500);
+  }
+
+  createMenu(spriteNames: string[]): Phaser.GameObjects.Container {
+    const menu = this.add.container(0, 0);
+
+    // Create a rectangular menu background
+    const menuBackground = this.add.rectangle(0, 0, 200, 150, 0x000000);
+    menuBackground.setStrokeStyle(2, 0x1a65ac);
+    menu.add(menuBackground);
+    const spriteWidth = 50;
+    const spriteHeight = 50;
+    const padding = 10;
+    let x = padding;
+    let y = padding;
+
+    for (const spriteName of spriteNames) {
+      const sprite = this.add.sprite(x, y, spriteName);
+      sprite.setInteractive();
+      sprite.on("pointerup", () => {
+        //TODO cambiar el sprite del tile  
+        //clickedTile.setTexture(spriteName);
+      });
+
+      menu.add(sprite);
+      x += spriteWidth + padding;
+      if (x + spriteWidth + padding > menuBackground.width) {
+        x = padding;
+        y += spriteHeight + padding;
+      }
+    }
+
+    return menu;
   }
 }
 // //

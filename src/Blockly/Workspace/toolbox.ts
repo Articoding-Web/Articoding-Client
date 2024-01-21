@@ -28,6 +28,10 @@ export default {
                 {
                     'type': 'changeStatus',
                     'kind': 'block',
+                },
+                {
+                    'type': 'hit',
+                    'kind': 'block',
                 }
 
             ],

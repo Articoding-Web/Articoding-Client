@@ -5,6 +5,7 @@ import { Player } from "../Classes/Player";
 import { GridPhysics } from "../Classes/GridPhysics";
 import { Direction } from "../types/Direction";
 import ChestObject from "../Classes/ChestObject";
+import exp from "constants";
 
 export default class LevelPlayer extends Phaser.Scene {
   private theme: String;
@@ -130,6 +131,17 @@ export default class LevelPlayer extends Phaser.Scene {
     let runCodeBtn = <HTMLElement>document.getElementById("runCodeBtn");
     runCodeBtn.onclick = (ev: MouseEvent) => this.runCode();
   }
+  //para los bloques que requieren que crees variables
+  getPlayers(): Player[] {
+    return this.players;
+  }
+  getObjects(): any[] {
+    return this.objectsLayerJson;
+  }
+  getChests(): ChestObject[] {
+    return this.chests;
+  }
+
 
   createPlayerAnimation(
     name: string,
@@ -267,3 +279,5 @@ export default class LevelPlayer extends Phaser.Scene {
     this.events.emit('rotateOrder', Direction[direction]);
   }
 }
+
+export { LevelPlayer };
