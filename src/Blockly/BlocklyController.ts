@@ -157,4 +157,8 @@ export default class BlocklyController {
     };
     executeNextBlock();
   }
+
+  fetchCurrentWorkspace(){
+    return this.workspace;
+  }
 }

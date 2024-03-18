@@ -96,6 +96,7 @@ export function defineAllBlocks() {
     let repeats;
 
     repeats = generator.valueToCode(block, "TIMES", Order.ASSIGNMENT) || "0";
+    
     let childBlock;
     if(children.length === 1 && children[0].type != "math_number")
       childBlock = children[0];
@@ -110,7 +111,11 @@ export function defineAllBlocks() {
       childBlockCode.push(blockCode);
       childBlock = childBlock.getNextBlock();
     }
-
+    //looptrap without deltatime based approach
+    if(repeats >childBlockCode.length * 5 || repeats > 20){
+      repeats = (childBlockCode.length * 5) + 1;//magic
+    }
+    console.log("current repeats is:" ,repeats);
     let events = `[`;
     for(let x = 0; x < repeats; x++) {
       for(let y = 0; y < childBlockCode.length; y++) {
@@ -122,7 +127,7 @@ export function defineAllBlocks() {
         events += ","
     }
     events += "]"
-
+    
     return events;
   };
 

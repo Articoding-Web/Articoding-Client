@@ -1,6 +1,6 @@
 import { startLevelById } from "../client.js";
 import { restartCurrentLevel } from "../client.js";
-
+import {blocklyController} from '../client.js';
 let victoryModalInstance;
 let defeatModalInstance;
 
@@ -15,7 +15,7 @@ let defeatModalInstance;
     });
 
     const retryLevelButton = document.querySelector("#defeatModal .btn-primary");
-    retryLevelButton.addEventListener("click", () => restartCurrentLevel());
+    retryLevelButton.addEventListener("click", () => restartCurrentLevel(blocklyController.fetchCurrentWorkspace()));
 })();
 
 // Listen for the "winConditionModal" event

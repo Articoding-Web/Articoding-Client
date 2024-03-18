@@ -4,6 +4,7 @@ import LevelPlayer from "./Phaser/LevelPlayer/LevelPlayer";
 import LevelEditor from "./Phaser/LevelEditor/LevelEditor";
 // Temp
 import level from './baseLevel.json';
+import { block } from "blockly/core/tooltip";
 const BLOCKLY_DIV_ID = "blocklyDiv";
 
 let blocklyController: BlocklyController;
@@ -38,11 +39,15 @@ export async function startLevelById(levelId: number) {
   }
 }
 
-export async function restartCurrentLevel() {
+export async function restartCurrentLevel(blocklyController?) {
   phaserController.destroy();
-  
+  blocklyController.destroy();
+  const toolbox = currentLevelJSON.blockly.toolbox;
+  const maxInstances = currentLevelJSON.blockly.maxInstances;
+  const workspaceBlocks = currentLevelJSON.blockly.workspaceBlocks;
   const phaserJSON = currentLevelJSON.phaser;
   phaserController = new PhaserController("LevelPlayer", LevelPlayer, phaserJSON);
+  blocklyController = blocklyController || new BlocklyController(BLOCKLY_DIV_ID, toolbox, maxInstances, workspaceBlocks);
 }
 
 export function editLevel() {

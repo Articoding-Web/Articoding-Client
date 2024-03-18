@@ -1,12 +1,14 @@
 import * as Phaser from "phaser";
 import config from "../../config.js";
-
+import {startLevelById, restartCurrentLevel} from "../../client.js";
+import blocklyController from '../../Blockly/BlocklyController.js';
 import { Player } from "./Classes/Player.js";
 import { GridPhysics } from "./Classes/GridPhysics.js";
 import { Direction } from "./types/Direction.js";
 import ChestObject from "./Classes/ChestObject.js";
 import TrapObject from "./Classes/TrapObject.js";
 import ArticodingSprite from "./Classes/ArticodingSprite.js";
+import Bootstrap from '../../../public/js/bootstrap';
 
 export default class LevelPlayer extends Phaser.Scene {
   private theme: String;
@@ -246,18 +248,55 @@ export default class LevelPlayer extends Phaser.Scene {
   }
 
   checkWinCondition(): void {
+    let msg,stars,stat;
     for(let x in this.players){
       const player = this.players[x];
       if (!player.getIsAlive() || !player.hasCollectedChest()) {
-        const event = new CustomEvent("winConditionModal", { detail: {msg: "Lose", stars: 0, status: 0}});
-        document.dispatchEvent(event);
+        msg = "Lose", stars = 0, stat = 0;
+        this.launchModalInstance(msg,stars,stat);
         return;
       }
     }
 
-    const event = new CustomEvent("winConditionModal", { detail: {msg: "Win", stars: 3, status: 1}});
-    document.dispatchEvent(event);
+    
+    msg = "Win", stars = 3, stat = 1;
+    this.launchModalInstance(msg,stars,stat);
+    //TODO YA NO SE LLAMA AL EVENTO DE UTILS.JS, se hace aqui!!!
+    
   }
+
+  launchModalInstance(msg: String, stars: number, stat: number) {
+    let victoryModalInstance;
+    let defeatModalInstance;
+
+(function () {
+    const nextLevelButton = document.querySelector("#victoryModal .btn-primary")
+    nextLevelButton.addEventListener("click", () => {
+        let contentElement = document.getElementById("content");
+        let levelId = parseInt(contentElement.getAttribute("data-level-id"));
+        levelId += 1;
+        startLevelById(levelId);//TODO refactorizar para que si no lo carga, (porque es el ultimo nivel de la categoria, pase de categoria o algo)
+        document.getElementById("content").setAttribute("data-level-id", levelId.toString());
+    });
+
+    const retryLevelButton = document.querySelector("#defeatModal .btn-primary");
+    retryLevelButton.addEventListener("click", () => restartCurrentLevel(blocklyController.prototype.fetchCurrentWorkspace()));
+})();
+
+    if (stat === 1) {
+        document.querySelector("#victoryModal .stars").innerHTML = '<i class="fas fa-star"></i>'.repeat(stars);
+        if (!victoryModalInstance) {
+            victoryModalInstance = new Bootstrap.Modal("#victoryModal");
+        }
+        victoryModalInstance.show();
+    } else {
+        document.querySelector("#defeatModal .stars").innerHTML = '<i class="fas fa-star"></i>'.repeat(stars);
+        if (!defeatModalInstance)
+            defeatModalInstance = new Bootstrap.Modal(document.getElementById("defeatModal"));
+        defeatModalInstance.show();
+    }
+  }
+
 
   rotate(direction: string) {
     this.events.emit("rotateOrder", Direction[direction]);
